@@ -12,7 +12,7 @@
     "dev:memory": "node --import=tsx scripts/dev-memory.ts",
     "make-admin": "node --import=tsx scripts/create-admin.ts",
     "list-users": "node --import=tsx scripts/list-users.ts"
-  },
+  },    
   "keywords": [],
   "author": "",
   "license": "ISC",
