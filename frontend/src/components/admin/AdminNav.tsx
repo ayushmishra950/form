@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { DocumentIcon, GaugeIcon, UsersIcon } from '../Icons';
+import { ChatIcon, DocumentIcon, GaugeIcon, UsersIcon } from '../Icons';
 import { Badge } from '../ui/Primitives';
 import { cn } from '../../lib/utils';
 
@@ -7,6 +7,7 @@ const TABS = [
   { to: '/admin', label: 'Overview', icon: <GaugeIcon width={15} height={15} />, end: true },
   { to: '/admin/users', label: 'Users', icon: <UsersIcon width={15} height={15} />, end: false },
   { to: '/admin/forms', label: 'Forms', icon: <DocumentIcon width={15} height={15} />, end: false },
+  { to: '/admin/feedback', label: 'Feedback', icon: <ChatIcon width={15} height={15} />, end: false },
 ];
 
 /** Header and tab bar shared by every admin screen. */

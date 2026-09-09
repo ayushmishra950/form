@@ -7,6 +7,7 @@ import {
   SparkIcon,
   TrashIcon,
 } from '../components/Icons';
+import { FeedbackSection } from '../components/FeedbackSection';
 import { ShareLinkCard } from '../components/ShareLinkCard';
 import { Badge, Button, Card, EmptyState, Spinner } from '../components/ui/Primitives';
 import { useToast } from '../lib/toast';
@@ -180,6 +181,8 @@ export function DashboardPage() {
           ))}
         </ul>
       )}
+
+      <FeedbackSection />
     </div>
   );
 }

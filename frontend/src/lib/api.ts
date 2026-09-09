@@ -50,6 +50,7 @@ export interface AdminStats {
   };
   forms: { total: number; live: number };
   responses: { total: number; thisWeek: number };
+  feedback: { open: number; total: number };
   topForms: Array<{
     _id: string;
     title: string;
@@ -78,6 +79,25 @@ export interface PageInfo {
 }
 
 export type UserListFilter = 'all' | 'active' | 'inactive' | 'deleted';
+
+/* ---- Feedback / problem reports ---- */
+
+export type FeedbackType = 'feedback' | 'problem';
+export type FeedbackStatus = 'open' | 'in_review' | 'resolved';
+
+export interface FeedbackEntry {
+  _id: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  type: FeedbackType;
+  subject: string;
+  message: string;
+  status: FeedbackStatus;
+  adminNote: string | null;
+  resolvedAt: string | null;
+  createdAt: string;
+}
 
 export interface FieldError {
   field: string;
@@ -317,6 +337,35 @@ export const admin = {
       { method: 'DELETE' },
     ),
 
+  feedback: (
+    params: {
+      search?: string;
+      status?: 'all' | FeedbackStatus;
+      type?: 'all' | FeedbackType;
+    } = {},
+  ) => {
+    const query = new URLSearchParams();
+    if (params.search) query.set('search', params.search);
+    if (params.status && params.status !== 'all') query.set('status', params.status);
+    if (params.type && params.type !== 'all') query.set('type', params.type);
+    const serialised = query.toString();
+    return request<PageInfo & { feedback: FeedbackEntry[]; openCount: number }>(
+      `/admin/feedback${serialised ? `?${serialised}` : ''}`,
+    );
+  },
+
+  updateFeedback: (
+    id: string,
+    changes: { status?: FeedbackStatus; adminNote?: string },
+  ) =>
+    request<FeedbackEntry>(`/admin/feedback/${id}`, {
+      method: 'PATCH',
+      body: changes,
+    }),
+
+  deleteFeedback: (id: string) =>
+    request<{ id: string }>(`/admin/feedback/${id}`, { method: 'DELETE' }),
+
   forms: (params: { search?: string; status?: 'all' | 'active' | 'inactive' } = {}) =>
     request<PageInfo & { forms: AdminFormRow[] }>(
       `/admin/forms${listQuery(params)}`,
@@ -332,4 +381,18 @@ export const admin = {
     request<{ id: string; responsesRemoved: number }>(`/admin/forms/${id}`, {
       method: 'DELETE',
     }),
+};
+
+/* ------------------------------------------------------------------ *
+ * Feedback — what a signed-in user can do with their own submissions
+ * ------------------------------------------------------------------ */
+
+export const feedback = {
+  create: (input: { type: FeedbackType; subject: string; message: string }) =>
+    request<FeedbackEntry>('/feedback', { method: 'POST', body: input }),
+
+  mine: () => request<FeedbackEntry[]>('/feedback/mine'),
+
+  withdraw: (id: string) =>
+    request<{ id: string }>(`/feedback/${id}`, { method: 'DELETE' }),
 };

@@ -5,7 +5,7 @@ import { StatusPill } from '../../components/admin/StatusPill';
 import { accountStatus } from '../../lib/accountStatus';
 import { Badge, Card, Spinner } from '../../components/ui/Primitives';
 import {
-  CrownIcon,
+  ChatIcon,
   DocumentIcon,
   LayersIcon,
   UsersIcon,
@@ -46,14 +46,16 @@ export function AdminOverviewPage() {
         {
           label: 'Registered users',
           value: stats.users.total,
-          hint: `${stats.users.newThisWeek} joined this week`,
+          hint: `${stats.users.admins} admin(s) · ${stats.users.inactive} deactivated · ${stats.users.deleted} deleted`,
           icon: <UsersIcon width={18} height={18} />,
+          to: '/admin/users',
         },
         {
           label: 'Forms created',
           value: stats.forms.total,
           hint: `${stats.forms.live} live right now`,
           icon: <DocumentIcon width={18} height={18} />,
+          to: '/admin/forms',
         },
         {
           label: 'Responses collected',
@@ -62,10 +64,11 @@ export function AdminOverviewPage() {
           icon: <LayersIcon width={18} height={18} />,
         },
         {
-          label: 'Admins',
-          value: stats.users.admins,
-          hint: `${stats.users.inactive} deactivated · ${stats.users.deleted} deleted`,
-          icon: <CrownIcon width={18} height={18} />,
+          label: 'Open reports',
+          value: stats.feedback.open,
+          hint: `${stats.feedback.total} received in total`,
+          icon: <ChatIcon width={18} height={18} />,
+          to: '/admin/feedback',
         },
       ]
     : [];
@@ -90,16 +93,26 @@ export function AdminOverviewPage() {
         ) : (
           <>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              {tiles.map((tile) => (
-                <Card key={tile.label} className="p-5">
-                  <span className="mb-4 grid size-10 place-items-center rounded-xl bg-brand-500/12 text-brand-600 dark:text-brand-300">
-                    {tile.icon}
-                  </span>
-                  <p className="text-2xl font-semibold tabular-nums">{tile.value}</p>
-                  <p className="mt-0.5 text-[13px] font-medium">{tile.label}</p>
-                  <p className="text-muted mt-1.5 text-xs">{tile.hint}</p>
-                </Card>
-              ))}
+              {tiles.map((tile) => {
+                const body = (
+                  <Card className="h-full p-5 transition-shadow hover:shadow-lift">
+                    <span className="mb-4 grid size-10 place-items-center rounded-xl bg-brand-500/12 text-brand-600 dark:text-brand-300">
+                      {tile.icon}
+                    </span>
+                    <p className="text-2xl font-semibold tabular-nums">{tile.value}</p>
+                    <p className="mt-0.5 text-[13px] font-medium">{tile.label}</p>
+                    <p className="text-muted mt-1.5 text-xs">{tile.hint}</p>
+                  </Card>
+                );
+
+                return tile.to ? (
+                  <Link key={tile.label} to={tile.to} className="block">
+                    {body}
+                  </Link>
+                ) : (
+                  <div key={tile.label}>{body}</div>
+                );
+              })}
             </div>
 
             <div className="mt-8 grid gap-4 lg:grid-cols-2">

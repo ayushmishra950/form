@@ -17,6 +17,7 @@ import { ResponsesPage } from './pages/ResponsesPage';
 import { AdminOverviewPage } from './pages/admin/AdminOverviewPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { AdminFormsPage } from './pages/admin/AdminFormsPage';
+import { AdminFeedbackPage } from './pages/admin/AdminFeedbackPage';
 import { ViewFormPage } from './pages/ViewFormPage';
 import { useTheme } from './lib/useTheme';
 
@@ -77,6 +78,7 @@ export default function App() {
                 <Route path="/admin" element={<AdminOverviewPage />} />
                 <Route path="/admin/users" element={<AdminUsersPage />} />
                 <Route path="/admin/forms" element={<AdminFormsPage />} />
+                <Route path="/admin/feedback" element={<AdminFeedbackPage />} />
               </Route>
 
               <Route path="*" element={<NotFoundPage />} />

@@ -202,3 +202,17 @@ export const MoreIcon = (props: IconProps) => (
     <circle cx="12" cy="18.5" r="1.2" />
   </Icon>
 );
+
+export const ChatIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M20 15a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9Z" />
+    <path d="M8.5 9.5h7M8.5 12.5h4" />
+  </Icon>
+);
+
+export const BugIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <rect x="8" y="7" width="8" height="13" rx="4" />
+    <path d="M8 11H4.5M8 15.5H4.5M16 11h3.5M16 15.5h3.5M9.5 7.2 8.2 4.6M14.5 7.2l1.3-2.6" />
+  </Icon>
+);

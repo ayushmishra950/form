@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { Types } from "mongoose";
 import Form from "../models/Form.ts";
 import Submission from "../models/Submission.ts";
+import Feedback from "../models/Feedback.ts";
 import User from "../models/User.ts";
 import RefreshToken from "../models/RefreshToken.ts";
 import { ApiError } from "../utils/ApiError.ts";
@@ -74,6 +75,8 @@ export const getStats = async (_req: Request, res: Response) => {
     totalResponses,
     newUsersThisWeek,
     responsesThisWeek,
+    openFeedback,
+    totalFeedback,
   ] = await Promise.all([
     User.countDocuments({ deletedAt: null }),
     User.countDocuments({ deletedAt: null, isActive: true }),
@@ -90,6 +93,8 @@ export const getStats = async (_req: Request, res: Response) => {
     Submission.countDocuments({
       createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
     }),
+    Feedback.countDocuments({ status: "open" }),
+    Feedback.countDocuments({}),
   ]);
 
   // The busiest forms, with their owner attached.
@@ -135,6 +140,7 @@ export const getStats = async (_req: Request, res: Response) => {
       },
       forms: { total: totalForms, live: liveForms },
       responses: { total: totalResponses, thisWeek: responsesThisWeek },
+      feedback: { open: openFeedback, total: totalFeedback },
       topForms,
       recentUsers,
     },
@@ -203,6 +209,7 @@ export const getUser = async (req: Request<{ id: string }>, res: Response) => {
     .select("title description isActive submissionCount createdAt fields");
 
   const responseCount = await Submission.countDocuments({ userId: user._id });
+  const feedbackCount = await Feedback.countDocuments({ userId: user._id });
   const activeSessions = await RefreshToken.countDocuments({
     userId: user._id,
     revokedAt: null,
@@ -222,7 +229,7 @@ export const getUser = async (req: Request<{ id: string }>, res: Response) => {
         fieldCount: form.fields?.length ?? 0,
         createdAt: form.createdAt,
       })),
-      stats: { formCount: forms.length, responseCount, activeSessions },
+      stats: { formCount: forms.length, responseCount, feedbackCount, activeSessions },
     },
   });
 };
@@ -337,7 +344,10 @@ export const purgeUser = async (req: Request<{ id: string }>, res: Response) => 
     Form.deleteMany({ userId: user._id }),
     Submission.deleteMany({ userId: user._id }),
   ]);
-  await RefreshToken.deleteMany({ userId: user._id });
+  await Promise.all([
+    RefreshToken.deleteMany({ userId: user._id }),
+    Feedback.deleteMany({ userId: user._id }),
+  ]);
   await user.deleteOne();
 
   res.status(200).json({

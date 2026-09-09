@@ -20,7 +20,7 @@ async function start() {
     if (error.code === "EADDRINUSE") {
       console.error(`\n❌ Port ${env.PORT} is already in use — this server did not start.`);
       console.error(`   Find the process:  lsof -nP -iTCP:${env.PORT} -sTCP:LISTEN`);
-      console.error(`   Then stop it, or set a different PORT in backend-form/.env\n`);
+      console.error(`   Then stop it, or set a different PORT in this project's .env\n`);
     } else {
       console.error("❌ Server error:", error);
     }

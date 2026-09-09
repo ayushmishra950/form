@@ -12,8 +12,18 @@ import {
   updateUserRole,
   updateUserStatus,
 } from "../controllers/admin.controller.ts";
+import {
+  deleteFeedback,
+  listAllFeedback,
+  updateFeedback,
+} from "../controllers/feedback.controller.ts";
 import { authenticate, requireRole } from "../middleware/authenticate.ts";
 import { validate } from "../middleware/validate.ts";
+import {
+  feedbackIdSchema,
+  listFeedbackSchema,
+  updateFeedbackSchema,
+} from "../schemas/feedback.schema.ts";
 import {
   idParamSchema,
   listQuerySchema,
@@ -36,6 +46,10 @@ router.patch("/users/:id/role", validate(updateUserRoleSchema), updateUserRole);
 router.delete("/users/:id", validate(idParamSchema), softDeleteUser);
 router.post("/users/:id/restore", validate(idParamSchema), restoreUser);
 router.delete("/users/:id/purge", validate(idParamSchema), purgeUser);
+
+router.get("/feedback", validate(listFeedbackSchema), listAllFeedback);
+router.patch("/feedback/:id", validate(updateFeedbackSchema), updateFeedback);
+router.delete("/feedback/:id", validate(feedbackIdSchema), deleteFeedback);
 
 router.get("/forms", validate(listQuerySchema), listAllForms);
 router.patch("/forms/:id/status", validate(updateFormStatusSchema), updateFormStatus);
