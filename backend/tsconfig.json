@@ -1,23 +1,15 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    // File Layout - अब ये चालू हैं और सही फ़ोल्डर बनाएंगे
+    "rootDir": "./",
+    "outDir": "./dist",
 
     // Environment Settings
-    // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "esnext",
-    "allowImportingTsExtensions":true,
-    "noEmit": true,
     "types": ["node"],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
 
-    // Other Outputs
+    // Other Outputs - "noEmit" को हटा दिया गया है ताकि JS फ़ाइलें जेनरेट हों
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
@@ -25,14 +17,8 @@
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
+    "allowImportingTsExtensions":true,
+    "noEmit": true,
 
     // Recommended Options
     "strict": true,
@@ -41,9 +27,13 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
 
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "builddd"]
+  "exclude": [
+    "node_modules", 
+    "dist", 
+    "scripts"
+  ]
 }
