@@ -1,15 +1,22 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    // File Layout — `npm run build` compiles this folder into dist/,
+    // and `npm start` runs dist/server.js with plain node (no tsx needed).
+    "rootDir": ".",
+    "outDir": "./dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "esnext",
-    "allowImportingTsExtensions":true,
+    // Source files import each other with explicit ".ts" specifiers
+    // (./app.ts). `rewriteRelativeImportExtensions` turns those into ".js" in
+    // the emitted output so Node can resolve them — and it is also what makes
+    // `allowImportingTsExtensions` legal while emitting (without it, tsc
+    // fails with TS5096).
+    "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "noEmit": false,
     "types": ["node"],
     // For nodejs:
@@ -19,8 +26,8 @@
 
     // Other Outputs
     "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    "declaration": false,
+    "declarationMap": false,
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
@@ -45,5 +52,13 @@
   },
 
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "builddd"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    // The compiled frontend this server hosts — no TypeScript in there.
+    "build",
+    // Local-only helper: it imports mongodb-memory-server, a devDependency
+    // that a production host never installs.
+    "scripts/dev-memory.ts"
+  ]
 }

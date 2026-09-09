@@ -2,11 +2,14 @@ node_modules/
 
 # Secrets — only the .example files are committed.
 backend/.env
+frontend/.env
 .env.local
 
-# Build output
+# Compiled backend output — rebuilt on the host by `npm run build`.
 backend/dist/
-backend/build/
+
+# Vite's intermediate output. The copy that ships lives in backend/build/,
+# which IS committed: the server serves it, and Render never rebuilds it.
 frontend/dist/
 
 # Logs / OS noise
