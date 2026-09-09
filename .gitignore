@@ -1,4 +1,14 @@
-backend/node_modules
-frontend/node_modules
-backend/.env
-frontend/.env
+node_modules/
+
+# Secrets — only the .example files are committed.
+.env
+.env.local
+
+# Build output
+backend/dist/
+backend/build/
+frontend/dist/
+
+# Logs / OS noise
+*.log
+.DS_Store

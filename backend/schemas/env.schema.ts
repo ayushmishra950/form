@@ -35,6 +35,16 @@ export const envSchema = z.object({
 
   /** Public origin of the frontend, used to build shareable form links. */
   APP_ORIGIN: z.string().default("http://localhost:5173"),
+
+  /**
+   * SameSite policy for the auth cookies.
+   *
+   * "lax" is right when the API and the frontend share a domain. When they
+   * are deployed separately (say a Vercel frontend calling a Render API) the
+   * browser treats every request as cross-site and drops a lax cookie — that
+   * setup needs "none", which browsers only honour over HTTPS.
+   */
+  COOKIE_SAMESITE: z.enum(["lax", "none", "strict"]).default("lax"),
 });
 
 export type Env = z.infer<typeof envSchema>;

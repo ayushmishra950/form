@@ -23,13 +23,21 @@ export interface AccessTokenPayload {
 
 const refreshTtlMs = () => env.REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000;
 
-/** Cookie flags shared by both tokens. */
-const baseCookieOptions = () =>
-  ({
+/**
+ * Cookie flags shared by both tokens.
+ *
+ * `SameSite=None` is only honoured on a secure connection, so it implies
+ * `secure` regardless of NODE_ENV — otherwise the browser silently discards
+ * the cookie and sign-in appears to do nothing.
+ */
+const baseCookieOptions = () => {
+  const sameSite = env.COOKIE_SAMESITE;
+  return {
     httpOnly: true, // never readable from JavaScript
-    secure: isProduction, // HTTPS only once deployed
-    sameSite: "lax", // survives top-level navigation, blocks cross-site POSTs
-  }) as const;
+    secure: isProduction || sameSite === "none",
+    sameSite,
+  } as const;
+};
 
 export function signAccessToken(payload: AccessTokenPayload): string {
   return jwt.sign(payload, env.ACCESS_TOKEN_SECRET, {
