@@ -1,7 +1,7 @@
 node_modules/
 
 # Secrets — only the .example files are committed.
-.env
+backend/.env
 .env.local
 
 # Build output
