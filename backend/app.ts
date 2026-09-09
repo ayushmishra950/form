@@ -45,6 +45,9 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 
  const frontendPath = path.join(process.cwd(), "build");
+ console.log("CWD:", process.cwd());
+console.log("Frontend path:", frontendPath);
+
 
 app.use(express.static(frontendPath));
 
