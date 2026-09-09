@@ -44,7 +44,7 @@ app.use("/api/feedback", feedbackRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 
- const frontendPath = path.join(process.cwd(), "./build");
+ const frontendPath = path.join(process.cwd(), "build");
 
 app.use(express.static(frontendPath));
 
