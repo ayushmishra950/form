@@ -80,6 +80,25 @@ export interface PageInfo {
 
 export type UserListFilter = 'all' | 'active' | 'inactive' | 'deleted';
 
+/* ---- Notifications ---- */
+
+export type NotificationType =
+  | 'user_registered'
+  | 'feedback_created'
+  | 'feedback_replied'
+  | 'feedback_status';
+
+export interface AppNotification {
+  _id: string;
+  type: NotificationType;
+  title: string;
+  body: string;
+  link: string | null;
+  read: boolean;
+  actorName: string | null;
+  createdAt: string;
+}
+
 /* ---- Feedback / problem reports ---- */
 
 export type FeedbackType = 'feedback' | 'problem';
@@ -141,8 +160,11 @@ export function onSessionLost(handler: () => void): () => void {
   return () => sessionLostHandlers.delete(handler);
 }
 
-/** Refreshes the session at most once even if several requests 401 together. */
-async function refreshSession(): Promise<boolean> {
+/**
+ * Refreshes the session at most once even if several callers ask together.
+ * Exported so the socket layer can reuse the same de-duplicated call.
+ */
+export async function refreshSession(): Promise<boolean> {
   refreshInFlight ??= fetch(`${API_BASE_URL}/auth/refresh`, {
     method: 'POST',
     credentials: 'include',
@@ -395,4 +417,30 @@ export const feedback = {
 
   withdraw: (id: string) =>
     request<{ id: string }>(`/feedback/${id}`, { method: 'DELETE' }),
+};
+
+/* ------------------------------------------------------------------ *
+ * Notifications
+ *
+ * The socket delivers them live; these endpoints restore the list and
+ * the unread badge after a reload, and record what has been seen.
+ * ------------------------------------------------------------------ */
+
+export const notifications = {
+  list: () =>
+    request<{ notifications: AppNotification[]; unreadCount: number }>('/notifications'),
+
+  markRead: (id: string) =>
+    request<{ notification: AppNotification; unreadCount: number }>(
+      `/notifications/${id}/read`,
+      { method: 'PATCH' },
+    ),
+
+  markAllRead: () =>
+    request<{ unreadCount: number }>('/notifications/read-all', { method: 'POST' }),
+
+  clearAll: () =>
+    request<{ removed: number; unreadCount: number }>('/notifications', {
+      method: 'DELETE',
+    }),
 };

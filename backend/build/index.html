@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="description"
+      content="FormCraft — build, preview and publish typed forms in minutes."
+    />
+    <title>FormCraft — Visual form builder</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      // Apply the saved theme before first paint to avoid a flash of light UI.
+      try {
+        var stored = localStorage.getItem('formcraft.theme');
+        var dark =
+          stored === 'dark' ||
+          (!stored && matchMedia('(prefers-color-scheme: dark)').matches);
+        if (dark) document.documentElement.classList.add('dark');
+      } catch (e) {}
+    </script>
+    <script type="module" crossorigin src="/assets/index-DhTALqUE.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BHJl0bkn.css">
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

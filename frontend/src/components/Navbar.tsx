@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogoMark, MoonIcon, PlusIcon, SunIcon } from './Icons';
+import { NotificationBell } from './NotificationBell';
 import { Button } from './ui/Primitives';
 import { useAuth } from '../lib/authContext';
 import { isAdmin } from '../lib/api';
@@ -80,6 +81,8 @@ export function Navbar({ theme, onToggleTheme }: NavbarProps) {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          {user ? <NotificationBell /> : null}
+
           <Button
             variant="ghost"
             size="sm"

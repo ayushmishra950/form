@@ -14,6 +14,7 @@ import {
   signAccessToken,
 } from "../utils/tokens.ts";
 import type { LoginInput, RegisterInput } from "../schemas/user.schema.ts";
+import { notifyAdmins } from "../services/notify.ts";
 
 /** Shape returned to the client — never includes the password hash. */
 const publicUser = (user: {
@@ -58,6 +59,19 @@ export const register = async (
   });
 
   setAuthCookies(res, { accessToken, refreshToken: rawToken });
+
+  // Every admin learns about the signup in real time.
+  await notifyAdmins(
+    {
+      type: "user_registered",
+      title: "New user registered",
+      body: `${user.name} (${user.email}) just created an account.`,
+      link: "/admin/users",
+      actorId: user._id as Types.ObjectId,
+      actorName: user.name,
+    },
+    user._id as Types.ObjectId, // in case an admin ever self-registers
+  );
 
   res.status(201).json({
     success: true,

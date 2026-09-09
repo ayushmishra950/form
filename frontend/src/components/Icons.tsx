@@ -216,3 +216,10 @@ export const BugIcon = (props: IconProps) => (
     <path d="M8 11H4.5M8 15.5H4.5M16 11h3.5M16 15.5h3.5M9.5 7.2 8.2 4.6M14.5 7.2l1.3-2.6" />
   </Icon>
 );
+
+export const BellIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M18 8.5a6 6 0 1 0-12 0c0 5-2 6.5-2 6.5h16s-2-1.5-2-6.5Z" />
+    <path d="M10.4 19a1.9 1.9 0 0 0 3.2 0" />
+  </Icon>
+);

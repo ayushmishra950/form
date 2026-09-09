@@ -1,6 +1,7 @@
 import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './components/AuthProvider';
 import { Navbar } from './components/Navbar';
+import { NotificationsProvider } from './components/NotificationsProvider';
 import {
   RedirectIfAuthenticated,
   RequireAdmin,
@@ -52,7 +53,8 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <ToastProvider>
-          <Routes>
+          <NotificationsProvider>
+            <Routes>
             {/* Public form — standalone, reachable by anyone with the link. */}
             <Route path="/form/:formId" element={<ViewFormPage />} />
 
@@ -83,7 +85,8 @@ export default function App() {
 
               <Route path="*" element={<NotFoundPage />} />
             </Route>
-          </Routes>
+            </Routes>
+          </NotificationsProvider>
         </ToastProvider>
       </AuthProvider>
     </BrowserRouter>

@@ -6,7 +6,9 @@ import adminRoutes from "./routes/admin.route.ts";
 import authRoutes from "./routes/auth.route.ts";
 import feedbackRoutes from "./routes/feedback.route.ts";
 import formRoutes from "./routes/form.route.ts";
+import notificationRoutes from "./routes/notification.route.ts";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.ts";
+import path from "path";
 
 const app = express();
 
@@ -39,7 +41,25 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/forms", formRoutes);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
+
+ const frontendPath = path.join(process.cwd(), "./build");
+
+app.use(express.static(frontendPath));
+
+app.get("/{*splat}", (req, res, next) => {
+    if(req.path.startsWith("/api/")){
+      return next();
+    }
+
+    if(req.path.startsWith("/socket.io/")){
+      return next();
+    }
+
+    res.sendFile(path.join(frontendPath, "index.html"));
+})
+
 
 app.use(notFoundHandler);
 app.use(errorHandler);

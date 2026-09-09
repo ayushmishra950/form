@@ -1,12 +1,18 @@
+import { createServer } from "node:http";
 import mongoose from "mongoose";
 import app from "./app.ts";
 import env from "./config/env.ts";
 import { connectDatabase } from "./config/db.ts";
+import { initRealtime } from "./realtime/io.ts";
 
 async function start() {
   await connectDatabase();
 
-  const server = app.listen(env.PORT, () => {
+  // Express and Socket.IO share one HTTP server, so both live on one port.
+  const server = createServer(app);
+  initRealtime(server);
+
+  server.listen(env.PORT, () => {
     console.log(`🚀 API listening on http://localhost:${env.PORT}`);
     console.log(`   Allowed origins: ${env.CORS_ORIGINS.join(", ")}`);
   });

@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import Feedback from "../models/Feedback.ts";
 import User from "../models/User.ts";
 import { ApiError } from "../utils/ApiError.ts";
+import { notifyAdmins, notifyUser } from "../services/notify.ts";
 import type {
   CreateFeedbackInput,
   UpdateFeedbackInput,
@@ -29,12 +30,22 @@ export const createFeedback = async (
     message: req.body.message,
   });
 
+  const isProblem = req.body.type === "problem";
+
+  await notifyAdmins({
+    type: "feedback_created",
+    title: isProblem ? "New problem reported" : "New feedback received",
+    body: `${user.name}: ${entry.subject}`,
+    link: "/admin/feedback",
+    actorId: user._id as never,
+    actorName: user.name,
+  });
+
   res.status(201).json({
     success: true,
-    message:
-      req.body.type === "problem"
-        ? "Problem reported — the admin team will look into it."
-        : "Thanks for the feedback!",
+    message: isProblem
+      ? "Problem reported — the admin team will look into it."
+      : "Thanks for the feedback!",
     data: entry,
   });
 };
@@ -80,6 +91,14 @@ export const deleteMyFeedback = async (req: Request<{ id: string }>, res: Respon
  * Admin side — mounted under /api/admin, so every route here is
  * already behind authenticate + requireRole("admin")
  * ------------------------------------------------------------------ */
+
+
+/** Human wording for a status, used in the notification body. */
+const STATUS_WORDING: Record<string, string> = {
+  open: "reopened",
+  in_review: "moved to in review",
+  resolved: "marked resolved",
+};
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -150,6 +169,25 @@ export const updateFeedback = async (
   }
 
   await entry.save();
+
+  // Tell the author what the admin team did with their message.
+  const statusChanged = req.body.status !== undefined;
+  const replied = req.body.adminNote !== undefined && Boolean(entry.adminNote);
+
+  if (replied || statusChanged) {
+    await notifyUser(entry.userId, {
+      type: replied ? "feedback_replied" : "feedback_status",
+      title: replied
+        ? "The admin team replied to you"
+        : `Your ${entry.type === "problem" ? "report" : "feedback"} was ${
+            STATUS_WORDING[entry.status] ?? "updated"
+          }`,
+      body: replied ? `“${entry.subject}” — ${entry.adminNote}` : `“${entry.subject}”`,
+      link: "/dashboard",
+      actorId: req.user?.id ?? null,
+      actorName: "Admin team",
+    });
+  }
 
   res.status(200).json({ success: true, message: "Updated", data: entry });
 };

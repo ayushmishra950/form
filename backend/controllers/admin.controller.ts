@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import Form from "../models/Form.ts";
 import Submission from "../models/Submission.ts";
 import Feedback from "../models/Feedback.ts";
+import Notification from "../models/Notification.ts";
 import User from "../models/User.ts";
 import RefreshToken from "../models/RefreshToken.ts";
 import { ApiError } from "../utils/ApiError.ts";
@@ -347,6 +348,7 @@ export const purgeUser = async (req: Request<{ id: string }>, res: Response) => 
   await Promise.all([
     RefreshToken.deleteMany({ userId: user._id }),
     Feedback.deleteMany({ userId: user._id }),
+    Notification.deleteMany({ userId: user._id }),
   ]);
   await user.deleteOne();
 
