@@ -11,7 +11,7 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.ts";
 import path from "path";
 
 const app = express();
-
+ 
 // Behind a proxy (Render, Fly, nginx) this makes req.ip and `secure` cookies
 // resolve correctly.
 app.set("trust proxy", 1);
