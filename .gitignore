@@ -3,7 +3,8 @@ node_modules/
 # Secrets — only the .example files are committed.
 backend/.env
 frontend/.env
-.env.local
+# Any local override: .env.local, .env.development.local, …
+*.local
 
 # Compiled backend output — rebuilt on the host by `npm run build`.
 backend/dist/

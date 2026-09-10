@@ -252,6 +252,37 @@ export const auth = {
 
   /** Restores the session on a page load; retries through /auth/refresh once. */
   me: () => request<{ user: AuthUser }>('/auth/me').then((data) => data.user),
+
+  /**
+   * Step 1 of the reset flow: confirm the email belongs to an account.
+   * Returns a single-use token that step 2 spends.
+   */
+  forgotPassword: (email: string) =>
+    request<{
+      email: string;
+      name: string;
+      resetToken: string;
+      expiresInMinutes: number;
+    }>('/auth/forgot-password', {
+      method: 'POST',
+      body: { email },
+      skipAuthRetry: true,
+    }),
+
+  /** Step 2: set the new password with the token from step 1. */
+  resetPassword: (token: string, password: string) =>
+    request<null>('/auth/reset-password', {
+      method: 'POST',
+      body: { token, password },
+      skipAuthRetry: true,
+    }),
+
+  /** Signed-in change. Other devices are signed out; this one stays in. */
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<null>('/auth/change-password', {
+      method: 'POST',
+      body: { currentPassword, newPassword },
+    }),
 };
 
 /* ------------------------------------------------------------------ *

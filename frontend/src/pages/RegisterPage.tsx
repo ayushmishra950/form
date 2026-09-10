@@ -3,6 +3,8 @@ import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthShell } from '../components/AuthShell';
 import { Field } from '../components/ui/Field';
+import { PasswordField } from '../components/ui/PasswordField';
+import { PasswordRules } from '../components/ui/PasswordRules';
 import { Button, Spinner } from '../components/ui/Primitives';
 import { useAuth } from '../lib/authContext';
 import { ApiError } from '../lib/api';
@@ -114,21 +116,21 @@ export function RegisterPage() {
           required
         />
 
-        <Field
-          label="Password"
-          type="password"
-          autoComplete="new-password"
-          placeholder="At least 8 characters"
-          value={values.password}
-          onChange={set('password')}
-          error={fieldErrors.password}
-          hint="Use 8 characters or more."
-          required
-        />
+        <div>
+          <PasswordField
+            label="Password"
+            autoComplete="new-password"
+            placeholder="Choose a strong password"
+            value={values.password}
+            onChange={set('password')}
+            error={fieldErrors.password}
+            required
+          />
+          <PasswordRules value={values.password} />
+        </div>
 
-        <Field
+        <PasswordField
           label="Confirm password"
-          type="password"
           autoComplete="new-password"
           placeholder="Repeat your password"
           value={values.confirm}

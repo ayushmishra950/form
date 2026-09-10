@@ -7,6 +7,7 @@ import {
   SparkIcon,
   TrashIcon,
 } from '../components/Icons';
+import { ChangePasswordSection } from '../components/ChangePasswordSection';
 import { FeedbackSection } from '../components/FeedbackSection';
 import { ShareLinkCard } from '../components/ShareLinkCard';
 import { Badge, Button, Card, EmptyState, Spinner } from '../components/ui/Primitives';
@@ -183,6 +184,7 @@ export function DashboardPage() {
       )}
 
       <FeedbackSection />
+      <ChangePasswordSection />
     </div>
   );
 }

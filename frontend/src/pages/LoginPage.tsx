@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthShell } from '../components/AuthShell';
 import { Field } from '../components/ui/Field';
+import { PasswordField } from '../components/ui/PasswordField';
 import { Button, Spinner } from '../components/ui/Primitives';
 import { useAuth } from '../lib/authContext';
 import { useToast } from '../lib/toast';
@@ -75,15 +76,24 @@ export function LoginPage() {
           required
         />
 
-        <Field
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
+        <div>
+          <PasswordField
+            label="Password"
+            autoComplete="current-password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+          />
+          <div className="mt-2 text-right">
+            <Link
+              to="/forgot-password"
+              className="text-brand-600 text-xs font-medium dark:text-brand-300"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        </div>
 
         <Button type="submit" size="lg" className="w-full" disabled={submitting}>
           {submitting ? <Spinner className="size-4" /> : null}

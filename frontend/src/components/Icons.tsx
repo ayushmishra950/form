@@ -223,3 +223,18 @@ export const BellIcon = (props: IconProps) => (
     <path d="M10.4 19a1.9 1.9 0 0 0 3.2 0" />
   </Icon>
 );
+
+export const EyeOffIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <path d="M9.9 5.7A9.4 9.4 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a16 16 0 0 1-3.2 4M6.3 7.4A16 16 0 0 0 2.5 12S6 18.5 12 18.5c1.5 0 2.8-.4 4-1" />
+    <path d="M10 10a3 3 0 0 0 4 4" />
+    <path d="M3.5 3.5l17 17" />
+  </Icon>
+);
+
+export const LockIcon = (props: IconProps) => (
+  <Icon {...props}>
+    <rect x="4.5" y="10.5" width="15" height="10" rx="2.5" />
+    <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" />
+  </Icon>
+);

@@ -53,12 +53,22 @@ export function verifyAccessToken(token: string): AccessTokenPayload {
   }
 }
 
-/** Hashes a raw refresh token so the database never stores the real value. */
-function hashRefreshToken(rawToken: string): string {
+/** Hashes a raw token so the database never stores the real value. */
+function hashToken(rawToken: string): string {
   return crypto
     .createHmac("sha256", env.REFRESH_TOKEN_PEPPER)
     .update(rawToken)
     .digest("hex");
+}
+
+const hashRefreshToken = hashToken;
+
+/** Same hashing for password-reset tokens, which are also opaque randoms. */
+export const hashResetToken = hashToken;
+
+/** A fresh, high-entropy token to hand to the client exactly once. */
+export function createOpaqueToken(bytes = 32): string {
+  return crypto.randomBytes(bytes).toString("hex");
 }
 
 interface IssueOptions {
@@ -109,7 +119,15 @@ export async function rotateRefreshToken(
   }
 
   if (stored.revokedAt) {
-    // Reuse detected: every descendant of this login is now suspect.
+    // A token with no replacement was revoked deliberately — a logout, a
+    // password change, an admin suspending the account. That is not an
+    // attack, so it must not be reported as one.
+    if (!stored.replacedByHash) {
+      throw ApiError.unauthorized("This session has ended — sign in again");
+    }
+
+    // Otherwise the token was already rotated and is being presented a second
+    // time: the signature of a replayed steal. Burn the whole family.
     await RefreshToken.updateMany(
       { family: stored.family, revokedAt: null },
       { $set: { revokedAt: new Date() } },

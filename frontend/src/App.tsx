@@ -11,7 +11,9 @@ import { ToastProvider } from './components/ui/Toast';
 import { BuilderRoute } from './pages/BuilderPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LandingPage } from './pages/LandingPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { LoginPage } from './pages/LoginPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ResponsesPage } from './pages/ResponsesPage';
@@ -62,6 +64,8 @@ export default function App() {
             <Route element={<RedirectIfAuthenticated />}>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
             </Route>
 
             <Route element={<AppLayout theme={theme} onToggleTheme={toggleTheme} />}>

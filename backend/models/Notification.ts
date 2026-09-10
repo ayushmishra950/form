@@ -6,6 +6,7 @@ export const NOTIFICATION_TYPES = [
   "feedback_created",
   "feedback_replied",
   "feedback_status",
+  "password_changed",
 ] as const;
 
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
